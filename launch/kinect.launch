@@ -1,0 +1,31 @@
+<launch>
+
+
+
+  <!-- The launch of the camera with depth_registration -->
+	<include file="$(find freenect_launch)/launch/freenect.launch">
+		<arg name="depth_registration" value="true"/>
+	</include>
+
+<!-- These are the rviz nodes for visualization -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find kinect)/rviz/my_kinect.rviz" required="true"/>
+<!-- this is the node for find_object_2d -->
+<node name="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" pkg="pointcloud_to_laserscan">
+    <remap from="cloud_in" to="/camera/depth_registered/points"/>
+    <remap from="scan" to="/camera/scan"/>
+    <rosparam>
+      target_frame: camera_link
+      transformation_tolerance: 0.01
+      min_height: 0.0
+      max_height: 1
+      angle_min: -0.61
+      angle_max: 0.61
+      angle_increment: 0.0087
+      scan_time: 0.3333
+      range_min: 0.30
+      range_max: 2
+      use_inf: true
+      concurrency_level: 1
+    </rosparam>
+  </node>
+</launch>
